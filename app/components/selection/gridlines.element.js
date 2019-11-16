@@ -1,4 +1,3 @@
-import { windowBounds } from '../../utilities/'
 import { GridlineStyles } from '../styles.store'
 
 export class Gridlines extends HTMLElement {
@@ -18,48 +17,49 @@ export class Gridlines extends HTMLElement {
     this.$shadow.innerHTML  = this.render(boundingRect)
   }
 
-  set update({ width, height, top, left }) {
-    const { winHeight, winWidth } = windowBounds()
+  set update({ width, height, top, left, x, y }) {
+    const winHeight = window.innerHeight, winWidth = window.innerWidth
+    const calced_y = y + window.scrollY
+    const calced_x = x + window.scrollX
     const [svg] = this.$shadow.children
     const [rect,line1,line2,line3,line4] = svg.children
 
     this.$shadow.host.style.display = 'block'
 
-    svg.setAttribute('viewBox', `0 0 ${winWidth} ${winHeight}`)
     rect.setAttribute('width', width + 'px')
-    rect.setAttribute('x', left)
-    rect.setAttribute('y', top)
-    line1.setAttribute('x1', left)
-    line1.setAttribute('x2', left)
-    line2.setAttribute('x1', left + width)
-    line2.setAttribute('x2', left + width)
-    line3.setAttribute('y1', top + window.scrollY)
-    line3.setAttribute('y2', top + window.scrollY)
+    rect.setAttribute('x', calced_x)
+    rect.setAttribute('y', calced_y)
+    line1.setAttribute('x1', calced_x)
+    line1.setAttribute('x2', calced_x)
+    line1.setAttribute('y2', winHeight)
+    line2.setAttribute('x1', calced_x + width)
+    line2.setAttribute('x2', calced_x + width)
+    line2.setAttribute('y2', winHeight)
+    line3.setAttribute('y1', calced_y)
+    line3.setAttribute('y2', calced_y)
     line3.setAttribute('x2', winWidth)
-    line4.setAttribute('y1', top + window.scrollY + height)
-    line4.setAttribute('y2', top + window.scrollY + height)
+    line4.setAttribute('y1', calced_y + height)
+    line4.setAttribute('y2', calced_y + height)
     line4.setAttribute('x2', winWidth)
   }
 
   render({ x, y, width, height, top, left }) {
-    const { winWidth, winHeight } = windowBounds()
-    const { offsetHeight } = document.body
+    const winHeight = window.innerHeight, winWidth = window.innerWidth
     const calced_y = y + window.scrollY
+    const calced_x = x + window.scrollX
 
     return `
       <svg
         width="100%"
-        viewBox="0 0 ${winWidth} ${winHeight}"
         version="1.1" xmlns="http://www.w3.org/2000/svg"
       >
         <rect
           fill="none"
           width="${width}" height="${height}"
-          x="${x}" y="${y}"
-          style="display:none;"
+          x="${calced_x}" y="${calced_y}"
         ></rect>
-        <line x1="${x}" y1="0" x2="${x}" y2="${offsetHeight}"></line>
-        <line x1="${x + width}" y1="0" x2="${x + width}" y2="${offsetHeight}"></line>
+        <line x1="${calced_x}" y1="0" x2="${calced_x}" y2="${winHeight}"></line>
+        <line x1="${calced_x + width}" y1="0" x2="${calced_x + width}" y2="${winHeight}"></line>
         <line x1="0" y1="${calced_y}" x2="${winWidth}" y2="${calced_y}"></line>
         <line x1="0" y1="${calced_y + height}" x2="${winWidth}" y2="${calced_y + height}"></line>
       </svg>

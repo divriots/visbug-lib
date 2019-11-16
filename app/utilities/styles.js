@@ -59,36 +59,31 @@ export const getStyles = el => {
 }
 
 export const getComputedBackgroundColor = el => {
-  let background = getStyle(el, 'background-color')
+  let background = undefined
+      , node  = el
 
-  if (background === 'rgba(0, 0, 0, 0)') {
-    let node  = findNearestParentElement(el)
-      , found = false
+  while(true) {
+    let bg  = getStyle(node, 'background-color')
 
-    while(!found) {
-      let bg  = getStyle(node, 'background-color')
-
-      if (bg !== 'rgba(0, 0, 0, 0)') {
-        found = true
-        background = bg
-      }
-
-      node = findNearestParentElement(node)
-
-      if (node.nodeName === 'HTML') {
-        found = true
-        background = 'white'
-      }
+    if (bg !== 'rgba(0, 0, 0, 0)') {
+      background = bg
+      break;
     }
-  }
 
+    if (node.nodeName === 'HTML') {
+      background = 'white'
+      break;
+    }
+
+    node = findNearestParentElement(node)
+  }
   return background
 }
 
 export const findNearestParentElement = el =>
   el.parentNode && el.parentNode.nodeType === 1
     ? el.parentNode
-    : el.parentNode.nodeName === '#document-fragment'
+    : el.parentNode.nodeName === '#document-fragment' 
       ? el.parentNode.host
       : el.parentNode.parentNode.host
 

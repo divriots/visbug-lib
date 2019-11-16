@@ -213,7 +213,7 @@ export function Selectable(visbug) {
       getStyles(el))
 
     try {
-      const colormode = $('vis-bug')[0].colorMode
+      const colormode = visbug.colorMode
 
       const styles = this.copied_styles[0]
         .map(({prop,value}) => {
