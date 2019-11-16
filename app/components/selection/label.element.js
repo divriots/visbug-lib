@@ -54,7 +54,7 @@ export class Label extends HTMLElement {
 
   set update({x,y,width}) {
     this.style.setProperty('--top', `${y + window.scrollY}px`)
-    this.style.setProperty('--left', `${x - 1}px`)
+    this.style.setProperty('--left', `${x + window.scrollX - 1}px`)
     this.style.setProperty('--max-width', `${width + (window.innerWidth - x - width - 20)}px`)
   }
 

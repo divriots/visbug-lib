@@ -57,7 +57,7 @@ export class Handles extends HTMLElement {
     this.$shadow.host.setAttribute('data-label-id', node_label_id)
 
     this.style.setProperty('--top', `${top + window.scrollY}px`)
-    this.style.setProperty('--left', `${left}px`)
+    this.style.setProperty('--left', `${left + window.scrollX}px`)
 
     return `
       <svg
