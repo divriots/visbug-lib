@@ -1,16 +1,16 @@
 import $ from 'blingblingjs'
-import { HandleStyles } from '../styles.store'
+import { HandleStyles, handle_css, supportsAdoptedStyleSheets } from '../styles.store'
 
 export class Handles extends HTMLElement {
 
   constructor() {
     super()
     this.$shadow = this.attachShadow({mode: 'closed'})
-    this.styles = [HandleStyles]
+    this.styles = supportsAdoptedStyleSheets ? [HandleStyles] : [handle_css];
   }
 
   connectedCallback() {
-    this.$shadow.adoptedStyleSheets = this.styles
+    if (supportsAdoptedStyleSheets) this.$shadow.adoptedStyleSheets = this.styles
     window.addEventListener('resize', this.on_resize.bind(this))
   }
   
@@ -60,6 +60,7 @@ export class Handles extends HTMLElement {
     this.style.setProperty('--left', `${left + window.scrollX}px`)
 
     return `
+      ${this.renderStyles()}
       <svg
         class="visbug-handles"
         width="${width}" height="${height}"
@@ -77,6 +78,10 @@ export class Handles extends HTMLElement {
         <circle fill="hotpink" cx="${width}" cy="${height/2}" r="2"></circle>
       </svg>
     `
+  }
+
+  renderStyles() {
+    return supportsAdoptedStyleSheets ? '' : `<style>${this.styles.join('\n')}</style>`;
   }
 }
 

@@ -1,7 +1,7 @@
 import $                   from 'blingblingjs'
 import hotkeys             from 'hotkeys-js'
 import * as Icons          from '../vis-bug/vis-bug.icons'
-import { HotkeymapStyles } from '../styles.store'
+import { HotkeymapStyles, hotkeymap_css, supportsAdoptedStyleSheets } from '../styles.store'
 import { metaKey, altKey } from '../../utilities/'
 
 export class HotkeyMap extends HTMLElement {
@@ -31,10 +31,12 @@ export class HotkeyMap extends HTMLElement {
     this._usedkeys  = []
 
     this.tool       = 'hotkeymap'
+
+    this.styles = supportsAdoptedStyleSheets ? [HotkeymapStyles] : [hotkeymap_css]
   }
 
   connectedCallback() {
-    this.$shadow.adoptedStyleSheets = [HotkeymapStyles]
+    if (supportsAdoptedStyleSheets) this.$shadow.adoptedStyleSheets = this.styles
     this.$shift  = $('[keyboard] > section > [shift]', this.$shadow)
     this.$ctrl   = $('[keyboard] > section > [ctrl]', this.$shadow)
     this.$alt    = $(`[keyboard] > section > [${altKey}]`, this.$shadow)
@@ -117,6 +119,7 @@ export class HotkeyMap extends HTMLElement {
 
   render() {
     return `
+      ${this.renderStyles()}
       <article>
         <div tool-icon>
           <span>
@@ -160,6 +163,10 @@ export class HotkeyMap extends HTMLElement {
         </div>
       </article>
     `
+  }
+
+  renderStyles() {
+    return supportsAdoptedStyleSheets ? '' : `<style>${this.styles.join('\n')}</style>`;
   }
 }
 

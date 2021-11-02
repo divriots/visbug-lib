@@ -1,14 +1,15 @@
-import { OverlayStyles } from '../styles.store'
+import { OverlayStyles, overlay_css, supportsAdoptedStyleSheets } from '../styles.store'
 
 export class Overlay extends HTMLElement {
 
   constructor() {
     super()
     this.$shadow = this.attachShadow({mode: 'closed'})
+    this.styles = supportsAdoptedStyleSheets ? [OverlayStyles] : [overlay_css]
   }
 
   connectedCallback() {
-    this.$shadow.adoptedStyleSheets = [OverlayStyles]
+    if (supportsAdoptedStyleSheets) this.$shadow.adoptedStyleSheets = this.styles
   }
   
   disconnectedCallback() {}
@@ -32,6 +33,7 @@ export class Overlay extends HTMLElement {
 
   render({height, width}) {
     return `
+      ${this.renderStyles()}
       <svg class="visbug-overlay"
         width="${width}px" height="${height}px"
         viewBox="0 0 ${width} ${height}"
@@ -39,6 +41,10 @@ export class Overlay extends HTMLElement {
         <rect></rect>
       </svg>
     `
+  }
+
+  renderStyles() {
+    return supportsAdoptedStyleSheets ? '' : `<style>${this.styles.join('\n')}</style>`;
   }
 }
 

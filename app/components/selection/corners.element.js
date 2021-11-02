@@ -1,11 +1,11 @@
 import { Handles } from './handles.element'
-import { HandleStyles, CornerStyles } from '../styles.store'
+import { HandleStyles, CornersStyles, handle_css, corners_css, supportsAdoptedStyleSheets } from '../styles.store'
 
 export class Corners extends Handles {
 
   constructor() {
     super()
-    this.styles = [HandleStyles, CornerStyles]
+    this.styles = supportsAdoptedStyleSheets ? [HandleStyles, CornersStyles] : [handle_css, corners_css];
   }
 
   render({ width, height, top, left }) {
@@ -13,6 +13,7 @@ export class Corners extends Handles {
     this.style.setProperty('--left', `${left}px`)
 
     return `
+      ${this.renderStyles()}
       <svg width="${width}" height="${height}">
         <rect></rect>
         <rect></rect>

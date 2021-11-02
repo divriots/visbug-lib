@@ -11,15 +11,35 @@ import { default as metatip_css }    from './metatip/metatip.element.css'
 import { default as hotkeymap_css }  from './hotkey-map/base.element.css'
 import { default as grip_css }       from './selection/grip.element.css'
 
-const constructStylesheet = (styles, stylesheet = new CSSStyleSheet()) => {
-  stylesheet.replaceSync(styles)
-  return stylesheet
+export const supportsAdoptedStyleSheets = 'adoptedStyleSheets' in Document.prototype && 'replace' in CSSStyleSheet.prototype
+
+export const constructStylesheet = (styles) => {
+  if (supportsAdoptedStyleSheets) {
+    const stylesheet = new CSSStyleSheet()
+    stylesheet.replaceSync(styles)
+    return stylesheet
+  }
 }
+
+export {
+  visbug_css,
+  handle_css,
+  hover_css,
+  corners_css,
+  distance_css,
+  gridline_css,
+  label_css,
+  overlay_css,
+  boxmodel_css,
+  metatip_css,
+  hotkeymap_css,
+  grip_css,
+};
 
 export const VisBugStyles    = constructStylesheet(visbug_css)
 export const HandleStyles    = constructStylesheet(handle_css)
 export const HoverStyles     = constructStylesheet(hover_css)
-export const CornerStyles    = constructStylesheet(corners_css)
+export const CornersStyles   = constructStylesheet(corners_css)
 export const MetatipStyles   = constructStylesheet(metatip_css)
 export const DistanceStyles  = constructStylesheet(distance_css)
 export const GridlineStyles  = constructStylesheet(gridline_css)

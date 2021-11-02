@@ -1,15 +1,16 @@
 import $ from 'blingblingjs'
-import { LabelStyles } from '../styles.store'
+import { LabelStyles, label_css, supportsAdoptedStyleSheets } from '../styles.store'
 
 export class Label extends HTMLElement {
 
   constructor() {
     super()
     this.$shadow = this.attachShadow({mode: 'closed'})
+    this.styles = supportsAdoptedStyleSheets ? [LabelStyles] : [label_css]
   }
 
   connectedCallback() {
-    this.$shadow.adoptedStyleSheets = [LabelStyles]
+    if (supportsAdoptedStyleSheets) this.$shadow.adoptedStyleSheets = this.styles
     $('a', this.$shadow).on('click mouseenter', this.dispatchQuery.bind(this))
     window.addEventListener('resize', this.on_resize.bind(this))
   }
@@ -61,7 +62,11 @@ export class Label extends HTMLElement {
   render(node_label_id) {
     this.$shadow.host.setAttribute('data-label-id', node_label_id)
 
-    return `<span>${this._text}</span>`
+    return `${this.renderStyles()}<span>${this._text}</span>`
+  }
+
+  renderStyles() {
+    return supportsAdoptedStyleSheets ? '' : `<style>${this.styles.join('\n')}</style>`;
   }
 }
 

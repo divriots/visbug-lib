@@ -1,14 +1,15 @@
-import { DistanceStyles } from '../styles.store'
+import { DistanceStyles, distance_css, supportsAdoptedStyleSheets } from '../styles.store'
 
 export class Distance extends HTMLElement {
 
   constructor() {
     super()
     this.$shadow = this.attachShadow({mode: 'open'})
+    this.styles = supportsAdoptedStyleSheets ? [DistanceStyles] : [distance_css]
   }
 
   connectedCallback() {
-    this.$shadow.adoptedStyleSheets = [DistanceStyles]
+    if (supportsAdoptedStyleSheets) this.$shadow.adoptedStyleSheets = this.styles
   }
   
   disconnectedCallback() {}
@@ -47,12 +48,17 @@ export class Distance extends HTMLElement {
     this.$shadow.host.setAttribute('data-label-id', node_label_id)
 
     return `
+      ${this.renderStyles()}
       <figure quadrant="${q}">
         <div></div>
         <figcaption><b>${d}</b>px</figcaption>
         <div></div>
       </figure>
     `
+  }
+
+  renderStyles() {
+    return supportsAdoptedStyleSheets ? '' : `<style>${this.styles.join('\n')}</style>`;
   }
 }
 

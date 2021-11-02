@@ -16,6 +16,7 @@ export class GuidesHotkeys extends HotkeyMap {
 
   render() {
     return `
+      ${this.renderStyles()}
       <article>
         <div tool-icon>
           <span>

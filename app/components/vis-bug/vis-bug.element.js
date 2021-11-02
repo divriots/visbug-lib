@@ -12,7 +12,7 @@ import {
   Guides, Screenshot, Position, Accessibility, draggable
 } from '../../features/'
 
-import { VisBugStyles }           from '../styles.store'
+import { VisBugStyles, visbug_css, supportsAdoptedStyleSheets } from '../styles.store'
 import { VisBugModel }            from './model'
 import * as Icons                 from './vis-bug.icons'
 import { provideSelectorEngine }  from '../../features/search'
@@ -32,10 +32,11 @@ export default class VisBug extends HTMLElement {
     this.toolbar_model  = VisBugModel
     this._tutsBaseURL   = 'tuts' // can be set by content script
     this.$shadow        = this.attachShadow({mode: 'closed'})
+    this.styles         = supportsAdoptedStyleSheets ? [VisBugStyles] : [visbug_css]
   }
 
   connectedCallback() {
-    this.$shadow.adoptedStyleSheets = [VisBugStyles]
+    if (supportsAdoptedStyleSheets) this.$shadow.adoptedStyleSheets = this.styles
 
     if (!this.$shadow.innerHTML)
       this.setup()
@@ -120,6 +121,7 @@ export default class VisBug extends HTMLElement {
 
   render() {
     return `
+      ${this.renderStyles()}
       <visbug-hotkeys></visbug-hotkeys>
       <ol>
         ${Object.entries(this.toolbar_model).reduce((list, [key, tool]) => `
@@ -145,6 +147,10 @@ export default class VisBug extends HTMLElement {
         </li>
       </ol>
     `
+  }
+
+  renderStyles() {
+    return supportsAdoptedStyleSheets ? '' : `<style>${this.styles.join('\n')}</style>`;
   }
 
   demoTip({key, tool, label, description, instruction}) {

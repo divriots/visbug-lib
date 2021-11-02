@@ -1,11 +1,11 @@
 import { Handles } from './handles.element'
-import { HandleStyles, GripStyles } from '../styles.store'
+import { HandleStyles, GripStyles, handle_css, grip_css, supportsAdoptedStyleSheets } from '../styles.store'
 
 export class Grip extends Handles {
 
   constructor() {
     super()
-    this.styles = [HandleStyles, GripStyles]
+    this.styles = supportsAdoptedStyleSheets ? [HandleStyles, GripStyles] : [handle_css, grip_css];
   }
 
   toggleHovering({hovering}) {
@@ -19,6 +19,7 @@ export class Grip extends Handles {
     this.style.setProperty('--left', `${left}px`)
 
     return `
+      ${this.renderStyles()}
       <svg width="${width}" height="${height}">
         <pattern id="stripes" patternUnits="userSpaceOnUse" width="4" height="4">
           <line x="0" y1="0" x2="0" y2="4" style="stroke:hsla(330, 100%, 71%, 50%); stroke-width: 3;" />
