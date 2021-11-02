@@ -7,4 +7,4 @@ extension/toolbar/bundle.css
 extension/build
 extension/tuts
 index.js
-npm.js
+/npm.js
