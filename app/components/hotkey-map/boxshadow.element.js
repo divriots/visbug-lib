@@ -17,6 +17,7 @@ export class BoxshadowHotkeys extends HotkeyMap {
 
   render() {
     return `
+      ${this.renderStyles()}
       <article>
         <div tool-icon>
           <span>

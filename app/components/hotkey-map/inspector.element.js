@@ -17,6 +17,7 @@ export class InspectorHotkeys extends HotkeyMap {
 
   render() {
     return `
+      ${this.renderStyles()}
       <article>
         <div tool-icon>
           <span>

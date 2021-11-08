@@ -1,14 +1,15 @@
-import { GridlineStyles } from '../styles.store'
+import { GridlineStyles, gridline_css, supportsAdoptedStyleSheets } from '../styles.store'
 
 export class Gridlines extends HTMLElement {
 
   constructor() {
     super()
     this.$shadow = this.attachShadow({mode: 'closed'})
+    this.styles = supportsAdoptedStyleSheets ? [GridlineStyles] : [gridline_css]
   }
 
   connectedCallback() {
-    this.$shadow.adoptedStyleSheets = [GridlineStyles]
+    if (supportsAdoptedStyleSheets) this.$shadow.adoptedStyleSheets = this.styles
   }
   
   disconnectedCallback() {}
@@ -49,6 +50,7 @@ export class Gridlines extends HTMLElement {
     const calced_x = x + window.scrollX
 
     return `
+      ${this.renderStyles()}
       <svg
         width="100%"
         version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -64,6 +66,10 @@ export class Gridlines extends HTMLElement {
         <line x1="0" y1="${calced_y + height}" x2="${winWidth}" y2="${calced_y + height}"></line>
       </svg>
     `
+  }
+
+  renderStyles() {
+    return supportsAdoptedStyleSheets ? '' : `<style>${this.styles.join('\n')}</style>`;
   }
 }
 

@@ -1,16 +1,17 @@
 import $ from 'blingblingjs'
 import { createClassname } from '../../utilities/'
-import { MetatipStyles } from '../styles.store'
+import { MetatipStyles, metatip_css, supportsAdoptedStyleSheets } from '../styles.store'
 
 export class Metatip extends HTMLElement {
 
   constructor() {
     super()
     this.$shadow = this.attachShadow({mode: 'closed'})
+    this.styles = supportsAdoptedStyleSheets ? [MetatipStyles] : [metatip_css]
   }
 
   connectedCallback() {
-    this.$shadow.adoptedStyleSheets = [MetatipStyles]
+    if (supportsAdoptedStyleSheets) this.$shadow.adoptedStyleSheets = this.styles
     $(this.$shadow.host).on('mouseenter', this.observe.bind(this))
   }
 
@@ -51,6 +52,7 @@ export class Metatip extends HTMLElement {
 
   render({el, width, height, localModifications, notLocalModifications}) {
     return `
+      ${this.renderStyles()}
       <figure>
         <h5>
           <a node>${el.nodeName.toLowerCase()}</a>
@@ -85,6 +87,10 @@ export class Metatip extends HTMLElement {
         </div>
       </figure>
     `
+  }
+
+  renderStyles() {
+    return supportsAdoptedStyleSheets ? '' : `<style>${this.styles.join('\n')}</style>`;
   }
 }
 

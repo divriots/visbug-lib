@@ -7,6 +7,7 @@ export class Ally extends Metatip {
   
   render({el, ally_attributes, contrast_results}) {
     return `
+      ${this.renderStyles()}
       <figure>
         <h5>${el.nodeName.toLowerCase()}${el.id && '#' + el.id}</h5>
         <div>

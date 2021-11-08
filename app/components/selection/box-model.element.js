@@ -1,4 +1,4 @@
-import { BoxModelStyles } from '../styles.store'
+import { BoxModelStyles, boxmodel_css, supportsAdoptedStyleSheets } from '../styles.store'
 
 export class BoxModel extends HTMLElement {
 
@@ -6,10 +6,11 @@ export class BoxModel extends HTMLElement {
     super()
     this.$shadow = this.attachShadow({mode: 'closed'})
     this.drawable = {}
+    this.styles = supportsAdoptedStyleSheets ? [BoxModelStyles] : [boxmodel_css]
   }
 
   connectedCallback() {
-    this.$shadow.adoptedStyleSheets = [BoxModelStyles]
+    if (supportsAdoptedStyleSheets) this.$shadow.adoptedStyleSheets = this.styles
   }
 
   disconnectedCallback() {}
@@ -52,9 +53,10 @@ export class BoxModel extends HTMLElement {
       this.drawable.stripe = 'hsla(267, 100%, 58%, 80%)'
     }
 
-    this.styles({sides})
+    this.setHostStyles({sides})
 
     return `
+      ${this.renderStyles()}
       <div mask>
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
           <defs>
@@ -68,7 +70,11 @@ export class BoxModel extends HTMLElement {
     `
   }
 
-  styles({sides}) {
+  renderStyles() {
+    return supportsAdoptedStyleSheets ? '' : `<style>${this.styles.join('\n')}</style>`;
+  }
+
+  setHostStyles({sides}) {
     this.style.setProperty('--width', `${this.drawable.width}px`)
     this.style.setProperty('--height', `${this.drawable.height}px`)
     this.style.setProperty('--top', `${this.drawable.top}px`)
